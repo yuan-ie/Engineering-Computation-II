@@ -50,7 +50,7 @@ class node:
     def get_left(self):     return self.left
     def get_right(self):    return self.right
     
-
+# This is a class
 class tree:
 
     def __init__(self):
