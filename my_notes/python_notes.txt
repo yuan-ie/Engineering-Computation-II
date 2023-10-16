@@ -1,0 +1,21 @@
+python pythonfile.py
+
+set is an unordered collection
+ex.     var = {"geeks", "for" , "geeks"}
+        type(var)
+
+        => output: set
+
+myset = set({"a", "b", "c"})
+print(myset)
+
+myset.add("d")
+print(myset)
+
+
+two ways to print list in column from
+
+    1. print(*x, sep='\n')
+    
+    2. for value in x:
+           print(value)

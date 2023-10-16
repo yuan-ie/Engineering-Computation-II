@@ -1,0 +1,385 @@
+// class organize : public linked_list<int>
+// {
+//     public:
+//     int data;
+//     int i = 0; // counter to go through the data list
+//     int k; // counter that gets reset every loop
+//     int j=0; // counter for person
+//     int movie_count;
+//     vector <int> data_list_;
+//     vector <node*> customer_id;
+
+
+//     // organize()
+//     // {
+//     //     // do nothing
+//     // }
+//     organize(vector<int> list)
+//     {
+//         data_list_ = list;
+//     }
+
+//     void org_data()
+//     {
+//         // DECLARE AND INITIALIZE MY STARTING NODE POINTERS
+//         //node *down; // create some sort of irregular array;
+//         node *current;
+//         node *ID_num = new node(data_list_[i]); // first ID number
+//         head = ID_num; // the first ID number is the head
+
+//         customer_id.push_back(ID_num); // set the ID number to specific customer
+//         current = customer_id[j]; // set current pointer to head
+//         cout << "ID number: "<<current->data << endl;
+
+//         i++; // this should go to the next data which is the # of movies watched
+
+//         while (current != nullptr)
+//         {
+            
+//             // get the number of movies watched
+//             // first loop (second data value = movies watched)
+//             movie_count = data_list_[i];
+//             cout << "number of movies watched: "<< movie_count << endl;
+//             // for-loop to store all movie IDs into a linked list associated with the ID_num
+//             for (k = 0; k < movie_count; k++)
+//             {
+//                 i++;
+//                 node *movie_ID = new node(data_list_[i]);
+//                 current->next = movie_ID;
+//                 current = current->next;
+//                 cout << "movie ID: "<<current->data << endl;
+//             }
+
+//             //current = nullptr; // force stop program
+//             i++; // increment count to continue going down data list
+//             j++; // increment count to move onto the next customer
+
+//             node *ID_num = new node(data_list_[i]); // next ID_num
+
+//             customer_id.push_back(ID_num); // set the next ID number to next specific customer
+//             current->next = customer_id[j]; // set current pointer equal to the new ID_num
+//             current = current->next; // set the new current pointer
+//             cout << "ID number: " << current->data << endl;
+//             //current->next = ID_num; // set the current pointer's next to the next ID_num
+
+//             i++; // increment count to continue going down data list
+
+//             current = nullptr;
+//         }
+//     }
+//     // void get_data(int input)
+//     // {
+//     //     vector<int>client_info;
+//     //     int j = input;
+//     //     int info=0; // counter to add info to client info vector
+
+//     //     client_info.push_back(customer_id[j]);
+//     // }
+    
+// };
+
+
+
+// void flip_data()
+//     {
+//         //node *flip = new node;
+//         node *current = head;
+//         node *flip;
+//         len();
+//         while (current != nullptr)
+//         {
+//             flip = new node;
+//             flip->data = head->data;
+//             cout << flip->data << endl;
+//             flip = flip->next;
+//             pop();
+
+//             flip = new node;
+//             flip->data = head->data;
+//             cout << flip->data << endl;
+//             flip = flip->next;
+//             pop();
+            
+//             current = nullptr;
+            
+//         }
+        
+//     }
+
+
+
+
+
+#include<iostream>
+#include<fstream>
+#include "linked_list.h"
+#include <vector>
+using namespace std;
+
+#define DEFAULT_DIRECTORY "/data/courses/ece_3822/current/project_2/"
+#define DEFAULT_FILENAME "dataFile1.txt"
+
+// do not edit
+string get_filename(int argc, char** argv){
+    string filename = DEFAULT_DIRECTORY;
+    
+    // no command line inputs: use default
+    if (argc == 1)
+        filename += DEFAULT_FILENAME;
+
+    // command line filename given
+    else
+        filename += (string) argv[1];
+    
+    return filename;
+}
+
+/*-------------------------------------------------------------*/
+
+class linked_list_movies : public linked_list<int>{
+    public:
+
+    void display(){
+        // WRITE CODE TO DISPLAY THE LIST OF MOVIES
+    }
+};
+
+/*-------------------------------------------------------------*/
+class organize_list : public linked_list<int>
+{
+    public:
+    int i;
+    vector <node*> customer_id;
+    vector <node*> movie_count;
+
+    organize_list()
+    {
+        linked_list();
+    }
+
+    // read the data through all of the nodes
+    void read_data() // [SUCCESS]
+    {
+        node *current;
+        current = head;
+        while (current != nullptr)
+        {
+            cout << current->data << endl;
+            current = current->next;
+        }
+    
+    }
+
+    // organize client data by ID number, numbers of movie watched, and each ID number
+    void organize_data() // [SUCCESS]
+    {
+        node *current;
+        current = head;
+        int j = 0;
+        while (current != nullptr)
+        {
+            // ID number
+            node *ID_num = new node;
+            ID_num = current;
+            customer_id.push_back(ID_num);
+            cout << "ID number: "<< customer_id[j]->data << endl;
+
+            // number of movies watched
+            current = current->next;
+            movie_count.push_back(current);
+            cout << "number of movies watched: " << movie_count[j]->data << endl;
+
+            // movie IDs
+            for (i=0; i<movie_count[j]->data; i++)
+            {
+                current = current->next;
+                node *movie_ID = new node;
+                movie_ID = current;
+                cout << "movie ID: " << movie_ID->data <<endl;
+            }
+
+            //current = nullptr;
+            current = current->next; //move to the next ID
+            j++;
+        }
+
+        //cout << head->data << endl;
+    }
+
+    node* get_client_ID(int num)
+    {
+        return customer_id[num];
+    }
+
+    vector <node*> get_all_client_ID()
+    {
+        int i=0;
+        node *current = customer_id[i];
+        while (customer_id[i] != nullptr)
+        {
+            //current = customer_id[i];
+            cout << customer_id[i]->data << endl;
+            i++;
+        }
+        return customer_id;
+    }
+    
+
+};
+
+/*-------------------------------------------------------------*/
+
+class customer : public organize_list
+{
+    public:
+    int client_num;
+    int i;
+    node *client_num_adr;
+    int movies_watched;
+    int movieID;
+
+    customer(node *ptr)
+    {
+        node *current = ptr;
+        client_num_adr = ptr; // save address to be used for other subroutines
+        client_num = current->data;
+        cout << "client ID: " << client_num << endl;
+        //get_client_ID_num(num);
+    }
+
+    //int customer_id;
+    linked_list_movies movie_ids;
+
+    // WRITE CODE TO DISPLAY THE CUSTOMER AND MOVIES
+    void display()
+    {
+        node *current = client_num_adr;
+
+        //next node is the number of movies watched
+        current = current->next;
+        movies_watched = current->data;
+        cout << "number of movies watched: " << movies_watched << endl;
+
+        cout << "movies: ";
+
+        for (i=0; i<movies_watched; i++)
+        {
+            current = current->next;
+            movieID = current->data;
+            cout << movieID << ", ";
+        }
+        
+        cout << "\b\b  " << endl;
+
+        
+        
+        //current = nullptr;
+        
+    }
+
+};
+
+
+// note this a linked list of POINTERS to customers...
+// that way you only every make one copy of each customer
+// and simply place a pointer to that customer in the linked list
+
+/*-------------------------------------------------------------*/
+
+class linked_list_customers : public linked_list<customer*>{
+
+    public:
+
+    void print_customer(int customer_id){
+        // WRITE THIS FUNCTION
+    }
+
+    void print_all(){
+        // WRITE THIS FUNCTION
+    }
+
+    void print_views(int movie_id){
+        // WRITE THIS FUNCTION
+    }
+
+    void load_customers(string filename){
+
+        /*
+        This code might be useful:
+        ifstream    file_id(filename);
+        string line
+        int value;
+        while (getline(file_id,line))
+            value = stoi(line)          
+        */
+
+    }
+
+};
+
+/*-------------------------------------------------------------*/
+
+int main(int argc, char** argv){
+
+    // get the filename where the data is stored
+    string filename;
+    filename = get_filename(argc,argv);
+
+    // init variables
+    string      line; 
+    ifstream    file_id(filename);
+    linked_list_customers clients;
+
+    // DATA VECTOR
+    vector <int> data_list;
+    vector <int> flipped_data_list;
+
+    // MY CLASS
+    organize_list data;
+    
+    int i = 0;
+    int j = 0;
+
+    // read integers from file and store into a vector
+    while (getline(file_id,line))
+    {
+        //data.insert(stoi(line));
+        data_list.push_back(stoi(line));
+        //data.insert(stoi(line));
+        //cout << data_list[i] << endl;
+        i++;
+    }
+
+    // flip the vector since the linked_list.h inserts node at head
+    for (i=data_list.size()-1; i+1>0; i--)
+    {
+        flipped_data_list.push_back(data_list[i]);
+        //cout << flipped_data_list[j] << endl;
+        data.insert(flipped_data_list[j]);
+        j++;
+    }
+
+    // SORT THE DATA
+    //data.read_data(); // read all data to check if correct
+    data.organize_data(); // organize by client info
+
+    // test: output all client IDs
+    data.get_all_client_ID();
+    
+    // test: output specific client's info
+    customer client(data.get_client_ID(1));
+    client.display();
+
+    //client.display();
+    //data.display_all_ID();
+    
+    //client.display();
+
+    // clients.load_customers(filename);
+
+    // clients.print_all();
+    // clients.print_customer(72,4);
+    // clients.print_views(109); 
+
+    return 0;
+}
