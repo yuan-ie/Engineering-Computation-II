@@ -70,7 +70,7 @@ class hash_table_generic{
     // generic insert function - should work regardless of hash table type
     void insert(student s){
 
-        // if every slot is taken, then the buffer can't hold any
+        // if every slot is taken, then the [buffer] can't hold any
         // more students
         if (n_elements == BUFFLEN)
             return;

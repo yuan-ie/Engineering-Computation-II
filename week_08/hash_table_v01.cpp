@@ -11,7 +11,7 @@ struct student{
         last = l;
         gpa = g;
     }
-    bool is_empty(){
+    {
         return ((first=="") & (last=="") & (gpa==0));
     }
 };
@@ -29,10 +29,13 @@ class hash_table{
 
         //  hash first name, taking position into account
         for (int i = 0 ; i<f.length() ; i++)
+            // turns letter of string into equivalent ascii code (binary)
+            // each ascii character multiplied by n(position) and added into sum
             sum += (i+1) * int(f[i]);
 
         //  hash last name, taking position into account
         for (int i = 0 ; i<l.length() ; i++)
+            // sum is continued through here
             sum += (i+1) * int(l[i]);
 
         // guarantee that idx is between 0 and BUFFLEN-1
