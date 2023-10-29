@@ -72,6 +72,7 @@ class hashTable_generic
     virtual int hash_function(student) = 0;
 
     public:
+    int i;
 
     hashTable_generic()
     {
@@ -81,8 +82,9 @@ class hashTable_generic
     int collision(int key)
     {
         // if the index is not empty, move to the next
-        while(!buffer[key].is_empty())
+        while(buffer[key].id != 0)
             key = (key + 1) % buff_len;
+
         return key;
     }
 
@@ -123,7 +125,7 @@ class hashTable_generic
 
     void read_all()
     {
-        for(int i=0; i<300; i++)
+        for(int i=0; i<50000; i++)
         {
             student s = buffer[i];
             cout << s.first << " " << s.last << " " << s.gpa << " " << s.id << " " << s.major << endl;
@@ -203,6 +205,7 @@ class hashTable_ID : public hashTable_generic
         int tmp_id;
         int digit;
         int i = 0;
+        int prod;
 
         id_num = s.id;
 
@@ -218,7 +221,7 @@ class hashTable_ID : public hashTable_generic
             // remove last digit
             tmp_id /= 10;
         }
-
+        sum = sum + id_num;
         // guarantee that idx is between 0 and buff_len-1
         idx = sum % buff_len;
 
@@ -272,29 +275,30 @@ class hashTable
     public:
     void insert(student s)
     {
+        // insert the student into the ID hashtable and the first/last name hashtable
         HT_ID.insert(s);
         HT_FL.insert(s);
-        //HT_L.insert(s);
     }
 
     void search_by_ID(int num)
     {
+        // search by ID. if not found, print student not found.
         cout << "search by ID: " << num << endl;
         HT_ID.search(num);
         cout << endl;
     }
     void search_by_first_and_last(string f, string l)
     {
+        // search by first and last name. if not found, print student not found.
         cout << "search by first and last name: " << f << " " << l << endl;
         HT_FL.search(f,l);
         cout << endl;
     }
-    // void search_by_last(string l)
-    // {
-    //     cout << "search by last name: " << l << endl;
-    //     HT_L.search(l);
-    //     cout << endl;
-    // }
+
+    void read_all()
+    {
+        HT_ID.read_all();
+    }
 };
 
 
@@ -369,7 +373,6 @@ float t_elapsed(){
 void process_input_data(){
     student* p_student;
     student temp;
-    int total = 0;
 
     while (!stop_thread){
         queue_mutex.lock();
@@ -386,7 +389,7 @@ void process_input_data(){
             // pop the students off the waiting list
             temp = waiting_list.pop();
             // check
-            // cout << temp.id << endl;
+            // cout << temp.first << endl;
 
             // insert the student's data into the database
             student_db.insert(temp);
@@ -438,6 +441,7 @@ void load_data(string filename){
         // [2] add the new student to the wait queue
         
         waiting_list.insert(s);
+        
 
         queue_mutex.unlock();
 
@@ -488,7 +492,9 @@ int main(int argc, char** argv){
     student_db.search_by_ID(258399712);
     student_db.search_by_ID(948140115);
     student_db.search_by_ID(793669913);
-    
+    student_db.search_by_ID(694699717);
+    student_db.search_by_ID(640860013);
+    student_db.search_by_ID(863830115);
 
     return 0;
 }
