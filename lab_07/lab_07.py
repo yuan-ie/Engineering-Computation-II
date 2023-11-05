@@ -142,6 +142,24 @@ class db:
     table_l_name = hash_table_lastname()
     table_id     = hash_table_id()
 
+    def insert(self, student):
+        self.table_f_name.insert(student)
+        self.table_l_name.insert(student)
+        self.table_id.insert(student)
+        #print("helloS")
+
+    def lookup(self, last):
+        print("\nLookup lastname = ", last)
+        self.table_l_name.lookup(last, disp=True)
+    def lookup_first(self, first):
+        print("\nLookup firstname = ", first)
+        self.table_f_name.lookup(first, disp=True)
+    def lookup_id(self, id):
+        print("\nLookup ID = ", id)
+        self.table_id.lookup(id, disp=True)
+
+
+
 def test_case_1():
     '''Test Case 1: test individual hash tables'''
 

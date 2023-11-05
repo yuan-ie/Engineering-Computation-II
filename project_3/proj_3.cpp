@@ -26,7 +26,7 @@
 using namespace std;
 using namespace std::chrono;
 
-// YOUR CODE HERE
+// student struct
 struct student
 {
     string first;
@@ -44,13 +44,13 @@ struct student
         major = m;
     }
 
+    // this is prob unnecessary
     bool is_empty(){
         return ((first=="") & (last=="") & (gpa==0) & (id==0) & (major==""));
     }
 };
 
 /*----------------------------------------------------*/
-// YOUR CODE HERE
 // generic hash table (parent hash table)
 class hashTable_generic
 {
@@ -115,6 +115,8 @@ class hashTable_generic
         }    
     }
 
+    // display student info if the student exists.
+    // if student DNE, display student not found
     void display(student s, int flag)
     {
         if(flag==1)
@@ -123,6 +125,8 @@ class hashTable_generic
             cout << "student not found" << endl;
     }
 
+    // display all info (or info from 0 to specified num)
+    // does not have to be called. only for checking purposes
     void read_all()
     {
         for(int i=0; i<50000; i++)
@@ -135,64 +139,72 @@ class hashTable_generic
 };
 
 /*----------------------------------------------------*/
-// hash table for first and last name
-class hashTable_first_and_last : public hashTable_generic
-{
-    protected:
-    int hash_function(student s)
-    {
-        int sum = 0;
-        int idx;
-        last_name = s.last;
-        first_name = s.first;
+// // hash table for first and last name
+// class hashTable_first_and_last : public hashTable_generic
+// {
+//     protected:
+//     student* names[buff_len];
+//     student* next;
+//     int hash_function(student s)
+//     {
+//         int sum = 0;
+//         int idx;
+//         last_name = s.last;
+//         first_name = s.first;
 
-        // temporary student last name
-        student tmp_student (first_name,last_name,0.0,0,"");
+//         // temporary student last name
+//         student tmp_student (first_name,last_name,0.0,0,"");
 
-        for (int i=0; i<first_name.length(); i++)
-        {
-            sum += (i+1) * int(first_name[i]);
-        }
-        for (int i=0; i<last_name.length(); i++)
-        {
-            sum += (i+1) * int(last_name[i]);
-        }
+//         // get the sum of student first name
+//         for (int i=0; i<first_name.length(); i++)
+//         {
+//             sum += (i+1) * int(first_name[i]);
+//         }
+//         // get the sum of student last name
+//         for (int i=0; i<last_name.length(); i++)
+//         {
+//             sum += (i+1) * int(last_name[i]);
+//         }
 
-        // guarantee that idx is between 0 and buff_len-1
-        idx = sum % buff_len;
+//         // guarantee that idx is between 0 and buff_len-1
+//         idx = sum % buff_len;
 
-        // return index derived from id number
-        return idx;  
-    }
+//         // return index derived from id number
+//         return idx;  
+//     }
 
-    public:
-    void search(string f, string l)
-    {
-        // parameters: (first name, last name, gpa, id, major)
-        // only put id number in empty student data
-        student tmp(f,l,0.0,0,"");
-        int i = 0;
-        int flag;
+//     // special fucntion to first/lastname hashtable
+//     // inserts names so it can find different students with the same name
+    
+
+//     public:
+//     void search(string f, string l)
+//     {
+//         // parameters: (first name, last name, gpa, id, major)
+//         // only put id number in empty student data
+//         student tmp(f,l,0.0,0,"");
+//         int i = 0;
+//         int flag;
         
-        int key = hash_function(tmp);
+//         int key = hash_function(tmp);
 
-        while(!match(buffer[key], f, l))
-        {
-            key = (key+1) % buff_len;
-            i++;
-            if (i==buff_len)
-                break;
-        }
-        if (match(buffer[key],f,l))
-            flag = 1;
-        else
-            flag = 0;
+//         while(!match(buffer[key], f, l))
+//         {
+//             key = (key+1) % buff_len;
+//             i++;
+//             if (i==buff_len)
+//                 break;
+//         }
+//         if (match(buffer[key],f,l))
+//             flag = 1;
+//         else
+//             flag = 0;
 
-        display(buffer[key],flag);
+//         display(buffer[key],flag);
         
-    }
+//     }
 
-};
+// };
 
 // hash table for ID number
 class hashTable_ID : public hashTable_generic
@@ -221,6 +233,7 @@ class hashTable_ID : public hashTable_generic
             // remove last digit
             tmp_id /= 10;
         }
+        // make the sum unique to each id number
         sum = sum + id_num;
         // guarantee that idx is between 0 and buff_len-1
         idx = sum % buff_len;
@@ -245,18 +258,24 @@ class hashTable_ID : public hashTable_generic
         
         int key = hash_function(tmp);
 
+        // if the inputted id does not match what's in the buffer
         while(!match(buffer[key], id))
         {
             key = (key+1) % buff_len;
             i++;
+
+            // if theres no match, end the search at some point so it is not infinite
             if (i==buff_len)
                 break;
         }
+        // if it matches (=1), if it doesnt (=0)
         if (match(buffer[key], id))
             flag = 1;
         else
             flag = 0;
 
+        // flag = 1, display that student info exists
+        // flag = 0, display that student info DNE
         display(buffer[key],flag);
     }
 };
@@ -267,7 +286,9 @@ class hashTable
 {
     private:
     hashTable_ID                HT_ID;
-    hashTable_first_and_last    HT_FL;
+
+    // not needed but wanted to try
+    //hashTable_first_and_last    HT_FL;
     //hashTable_lastName          HT_L;
     
     student std;
@@ -277,7 +298,7 @@ class hashTable
     {
         // insert the student into the ID hashtable and the first/last name hashtable
         HT_ID.insert(s);
-        HT_FL.insert(s);
+        //HT_FL.insert(s);
     }
 
     void search_by_ID(int num)
@@ -287,14 +308,15 @@ class hashTable
         HT_ID.search(num);
         cout << endl;
     }
-    void search_by_first_and_last(string f, string l)
-    {
-        // search by first and last name. if not found, print student not found.
-        cout << "search by first and last name: " << f << " " << l << endl;
-        HT_FL.search(f,l);
-        cout << endl;
-    }
+    // void search_by_first_and_last(string f, string l)
+    // {
+    //     // search by first and last name. if not found, print student not found.
+    //     cout << "search by first and last name: " << f << " " << l << endl;
+    //     HT_FL.search(f,l);
+    //     cout << endl;
+    // }
 
+    // not needed, but can use it to display everything if wanted
     void read_all()
     {
         HT_ID.read_all();
@@ -331,6 +353,7 @@ class queue
     }
 
     // type student: return type student
+    // pop student off queue (to be placed into hash table afterward)
     student pop()
     {
         student temp = list[0];
@@ -485,9 +508,23 @@ int main(int argc, char** argv){
     // 948140115
 
     // student_db.read_all();
-    student_db.search_by_first_and_last("Jason", "Allen");
-    student_db.search_by_first_and_last("Jason", "Li");
 
+    // search by first and last name (NOT PERFECT)
+    //student_db.search_by_first_and_last("Jason", "Allen");
+    //student_db.search_by_first_and_last("Jason", "Li");
+
+    // SEARCH BY ID
+    // file 0
+    student_db.search_by_ID(124599717);
+    student_db.search_by_ID(883319515);
+    student_db.search_by_ID(766369712);
+
+    // file 1
+    student_db.search_by_ID(758289915);
+    student_db.search_by_ID(811579717);
+    student_db.search_by_ID(325819911);
+
+    // file 2
     student_db.search_by_ID(427980112);
     student_db.search_by_ID(258399712);
     student_db.search_by_ID(948140115);
