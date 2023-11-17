@@ -94,6 +94,7 @@ class hash_table_firstname (hash_table_base):
     inherits <hash_table_base>
     '''
     # in the parameters, "item" is the inputted class object
+    # hashing similar to last name
     def hash_function(self, item=None, hash_item=None):
         if hash_item is None:
             hash_item = item.firstname
@@ -102,6 +103,7 @@ class hash_table_firstname (hash_table_base):
             s += ord(ch)
         return s%self.array_len
 
+    # lookup first name
     def lookup(self, target=None, disp=False):
         key = self.hash_function(hash_item=target)
         return self.buffer[key].lookup(target,"firstname",disp)
@@ -109,6 +111,7 @@ class hash_table_firstname (hash_table_base):
 class hash_table_lastname (hash_table_base):
     '''hash table of students organized by last name'''
 
+    # hashing similar to first name
     def hash_function(self, item=None, hash_item=None):
         if hash_item is None:
             hash_item = item.lastname
@@ -117,6 +120,7 @@ class hash_table_lastname (hash_table_base):
             s += ord(ch)
         return s%self.array_len
 
+    # lookup last name
     def lookup(self, target=None, disp=False):
         key = self.hash_function(hash_item=target)
         return self.buffer[key].lookup(target,"lastname",disp)
@@ -124,6 +128,7 @@ class hash_table_lastname (hash_table_base):
 class hash_table_id (hash_table_base):
     '''hash table of students organized by id number'''
     
+    # hashing specifically for id number
     def hash_function(self, item=None, hash_item=None):
         if hash_item is None:
             hash_item = item.id
@@ -132,6 +137,7 @@ class hash_table_id (hash_table_base):
             s += ord(ch)
         return s%self.array_len
 
+    # lookup id
     def lookup(self, target=None, disp=False):
         key = self.hash_function(hash_item=target)
         return self.buffer[key].lookup(target,"id",disp)
@@ -142,18 +148,21 @@ class db:
     table_l_name = hash_table_lastname()
     table_id     = hash_table_id()
 
+    # insert student info to respective hashtables
     def insert(self, student):
         self.table_f_name.insert(student)
         self.table_l_name.insert(student)
         self.table_id.insert(student)
-        #print("helloS")
 
+    # look up last name
     def lookup(self, last):
         print("\nLookup lastname = ", last)
         self.table_l_name.lookup(last, disp=True)
+    # look up first name
     def lookup_first(self, first):
         print("\nLookup firstname = ", first)
         self.table_f_name.lookup(first, disp=True)
+    # look up id
     def lookup_id(self, id):
         print("\nLookup ID = ", id)
         self.table_id.lookup(id, disp=True)
