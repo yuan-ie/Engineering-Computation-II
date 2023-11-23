@@ -144,7 +144,6 @@ class hashtable_songname : public hashtable_generic
             if (match(buffer[key][i], tmp))
             {
                 flag = 1;
-                i = i;
                 cout << "match!" << endl;
                 break;
             }

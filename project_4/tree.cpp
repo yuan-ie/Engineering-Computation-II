@@ -9,10 +9,15 @@ using namespace std;
 class tree{
 
     protected:
+
+    const static int num_branches = 7000;
+    vector <song> branch[num_branches];
+
     class node
     {
         public:
         int data;
+        int key;
         node *left, *right, *up;   
         node(song s){
             int data;
@@ -21,9 +26,6 @@ class tree{
             up    = nullptr;
         }
     }; // end class node
-
-    const static int num_branches = 7000;
-    vector <song> branch[num_branches];
 
     node *root;
     int nNodes;
@@ -59,7 +61,6 @@ class tree{
 
     void insert(song s)
     {
-        int r;
         int d = hash_function(s);
         node *newNode   = new node(s);
         newNode->data = d;
@@ -97,14 +98,11 @@ class tree{
                     currPtr = currPtr->right;
                     LR = 1;
                 }
-                // if new data = current data
+                // if new data = current data, insert into vector
                 else if (d == currPtr->data)
                 {
                     LR = 2;
-                    // check for collisions
-                    k = collision(d); // value only used to check where info is stored
                     branch[d].push_back(s);
-                    //cout << branch[d][k].sn << " is stored in branch " << d << " and element " << k << endl;
                     break;
                 }
 
@@ -112,14 +110,18 @@ class tree{
 
             // connect newNode to parent
             newNode->up = parentPtr;
+
+            // insert the struct object in vector in node
             if (LR==0)
             {
                 parentPtr->left = newNode;
+                // first element of its own vector
                 branch[d].push_back(s);
             }
             else if (LR==1)
             {
                 parentPtr->right = newNode;
+                // first element of its own vector
                 branch[d].push_back(s);
             }
 
@@ -127,48 +129,68 @@ class tree{
 
         // increment number of nodes
         nNodes++;
-
     }
 
-    // check if there is a collion, push back the vector
-    int collision(int d)
+    // true if songs match and bands match
+    bool match(song s, song tmp)
     {
-        // go to next
-        int i;
-        i = branch[d].size();
-        return i;
+        return (s.sn == tmp.sn) && (s.bn == tmp.bn);
     }
 
-    void search (song s)
+    // search for the song inputted
+    void search(song s)
     {
+        // make a temporary song
         song tmp(s.bn,s.sn);
-        int i = 0;
-        int n = 0;
-        int flag = 0;
-        
-        int key = hash_function(tmp);
 
+        // get the hash value for the tmp
+        int d = hash_function(tmp);
+
+        // new node things
+        node *newNode   = new node(tmp);
+        newNode->data = d;
+        node *currPtr   = root;
+
+        // display prompt
         cout << "\nsearching for song " << tmp.sn << ":" << endl;
-        // cout << key << endl;
-        // cout << buffer[key].size() << endl;
         
-        // check through the vector of buffer[key] to see if it has matching song name
-        for(i=0; i<branch[key].size(); i++)
+        
+        while (currPtr)
         {
-            cout << branch[key][i].sn << " by " <<  branch[key][i].bn << " at element " << i << endl;
-            // if match, raise the flag
-            // if (match(buffer[key][i], song_name))
-            // {
-            //     flag = 1;
-            //     i = i;
-            //     break;
-            // }
-            n++;
+            // if the tmp data is less than the current data,
+            // go to current node's left child
+            if (d < currPtr->data)
+            {
+                currPtr = currPtr->left;
+            }
+            // if the tmp data is more than the current data,
+            // go to current node's right child
+            else if (d > currPtr->data)
+            {
+                currPtr = currPtr->right;
+            }
+            // if tmp data = current data, go through the vectors
+            else if (d == currPtr->data)
+            {
+                // TEST [success]
+                // cout << branch[d][k].sn << " is stored in branch " << d << " and element " << k << endl;
+
+                // go through the vectors until the right song + band is found
+                for(int i=0; i<branch[d].size(); i++)
+                {
+                    cout << branch[d][i].sn << " by " <<  branch[d][i].bn << " at element " << i << endl;
+                    // if match, end loop
+                    if (match(branch[d][i], tmp))
+                    {
+                        cout << "match!" << endl;
+                        break;
+                    }
+                }
+                break;
+            }
+
         }
-        // otherwise, flag is 0
-        // cout << "i = " << i << " and flag is " << flag << endl;
-        // cout << buffer[key][n].sn << " is stored in key " << key << " and element " << n << endl;
-        // display(buffer[key][n],flag);
+
         
     }
 
