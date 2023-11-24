@@ -1,0 +1,15 @@
+MEMORY USAGE: 
+ - Hashtable
+   - Stack: 24096 bytes
+   - Heap: 1,643,851 bytes
+ - Binary Search Tree 
+   - Stack: 24 bytes
+   - Heap: 4,904,886 bytes
+
+TRAVERSALS: 
+ - Hashtable
+   - average traversals: 8.42771
+ - Binary Search Tree 
+   - average traversals: 33.7633
+
+Number of Nodes in Tree: 130
