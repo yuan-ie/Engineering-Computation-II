@@ -1,21 +1,19 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
 using namespace std;
-
 
 class hashtable_generic
 {
     protected:
     int n_elements;
-    int max_elements;
+    float memory;
+    int traversals;
 
     string song_name;
     string band_name;
 
-    // each buffer will contain 1000 songs
-    const static int buff_len = 7000;
+    const static int buff_len = 1000;
 
     // the buffer is a vector
     vector <song> buffer[buff_len];
@@ -30,33 +28,31 @@ class hashtable_generic
     hashtable_generic()
     {
         n_elements = 0;
+        memory = 0;
     }
 
-    // check if there is a collion, push back the vector
-    int collision(int key)
-    {
-        // go to next
-        i = 0;
-        if (buffer[key].size() == 0)
-            i = 0;
-        else
-        {
-            // let i = buffer size if this buffer exists
-            i = buffer[key].size();
-        }
-        
-            // key = (key + 1) % buff_len;
-        return i;
-    }
-
+    // true if songs match and bands match
     bool match(song s, song tmp)
     {
         return (s.sn == tmp.sn) && (s.bn == tmp.bn);
     }
 
+    float get_memory()
+    {
+        memory = sizeof(buffer);
+        return memory;
+    }
+
+    int get_traversals()
+    {
+        return traversals;
+    }
+
     void insert(song s)
     {
-        int key, k;
+        int key;
+
+        // cannot continue if buffer is full
         if (n_elements == buff_len)
             return;
         
@@ -64,31 +60,13 @@ class hashtable_generic
         {
             // hash the song name
             key = hash_function(s);
-            // cout << key << endl;
 
-            // check for any collisions
-            k = collision(key);
-            // cout << k << endl;
-
-            // store the song into this buffer element
+            // store the song into this buffer vector
             buffer[key].push_back(s);
-            // buffer[key] = s;
-            // int size_b = buffer[key].size();
 
+            // increment elements
             n_elements++;
-
-            cout << buffer[key][k].sn << " is stored in key " << key << " and element " << k << endl;
         }
-    }
-
-    // display student info if the student exists.
-    // if student DNE, display student not found
-    void display(song s, int flag)
-    {
-        if(flag==1)
-            cout << song_name << " found" << endl;
-        if(flag==0)
-            cout << "song not found" << endl;
     }
 };
 
@@ -127,28 +105,29 @@ class hashtable_songname : public hashtable_generic
     {
         song tmp(s.bn, s.sn);
         int i = 0;
-        int n = 0;
-        int flag = 0;
-        
-        int key = hash_function(tmp);
 
-        cout << "\nsearching for song " << tmp.sn << ":" << endl;
-        // cout << key << endl;
-        // cout << buffer[key].size() << endl;
+        traversals = 0;
+        
+        // get the key from hash function
+        int key = hash_function(tmp);
+        traversals ++;
+
+        // cout << "\nsearching for song " << tmp.sn << ":" << endl;
         
         // check through the vector of buffer[key] to see if it has matching song name
         for(i=0; i<buffer[key].size(); i++)
         {
-            cout << buffer[key][i].sn << " by " <<  buffer[key][i].bn << " at element " << i << endl;
-            // if match, raise the flag
+            // cout << buffer[key][i].sn << " by " <<  buffer[key][i].bn << " at element " << i << endl;
+            // if match, break the loop
             if (match(buffer[key][i], tmp))
             {
-                flag = 1;
-                cout << "match!" << endl;
+                // cout << "match!" << endl;
                 break;
             }
+            traversals ++;
         }
         
+        // cout << "number of traversals: " << traversals <<  endl;
     }
 
 };

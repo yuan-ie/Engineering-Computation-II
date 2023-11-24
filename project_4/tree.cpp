@@ -3,24 +3,19 @@
 #include <vector>
 using namespace std;
 
-
-
-// template<typename T>
 class tree{
 
-    protected:
-
-    const static int num_branches = 7000;
-    vector <song> branch[num_branches];
+    protected:   
 
     class node
     {
         public:
-        int data;
         int key;
+        int data;
+        vector <song> branch;
         node *left, *right, *up;   
-        node(song s){
-            int data;
+        node()
+        {
             left  = nullptr;
             right = nullptr;
             up    = nullptr;
@@ -29,6 +24,8 @@ class tree{
 
     node *root;
     int nNodes;
+    float memory = 0;
+    int traversals;
 
     public:
     // constructor - no parameters
@@ -36,6 +33,11 @@ class tree{
         root   = nullptr;
         nNodes = 0;
     }    
+
+    int get_traversals()
+    {
+        return traversals;
+    }
 
     int hash_function(song s)
     {
@@ -53,7 +55,7 @@ class tree{
         }
 
         // guarantee that idx is between 0 and buff_len-1
-        idx = sum % num_branches;
+        idx = sum;
 
         // return index derived from song name
         return idx;  
@@ -61,19 +63,23 @@ class tree{
 
     void insert(song s)
     {
-        int d = hash_function(s);
-        node *newNode   = new node(s);
-        newNode->data = d;
+        // get the index from hash function
+        int idx = hash_function(s);
+
+        // create new node and do node things
+        node *newNode   = new node();
+        newNode->data = idx;
         node *currPtr   = root;
         node *parentPtr = nullptr;
 
-        int k;
         int LR;
 
         // special case if tree is empty
         if (nNodes == 0)
         {
             root=newNode;    
+            // increment number of nodes
+            nNodes++;
         }
         else
         {
@@ -84,25 +90,28 @@ class tree{
             while (currPtr)
             {
                 parentPtr = currPtr;
+
                 // if the new data is less than the current data,
                 // go to current node's left child
-                if (d < currPtr->data)
+                if (idx < currPtr->data)
                 {
                     currPtr = currPtr->left;
                     LR = 0;
                 }
+
                 // if the new data is more than the current data,
                 // go to current node's right child
-                else if (d > currPtr->data)
+                else if (idx > currPtr->data)
                 {
                     currPtr = currPtr->right;
                     LR = 1;
                 }
+
                 // if new data = current data, insert into vector
-                else if (d == currPtr->data)
+                else if (idx == currPtr->data)
                 {
                     LR = 2;
-                    branch[d].push_back(s);
+                    currPtr->branch.push_back(s);
                     break;
                 }
 
@@ -111,24 +120,25 @@ class tree{
             // connect newNode to parent
             newNode->up = parentPtr;
 
-            // insert the struct object in vector in node
-            if (LR==0)
+            if (LR==0) // go to left child node
             {
                 parentPtr->left = newNode;
                 // first element of its own vector
-                branch[d].push_back(s);
+                newNode->branch.push_back(s);
+                // increment number of nodes
+                nNodes++;
             }
-            else if (LR==1)
+            else if (LR==1) // go to right child node
             {
                 parentPtr->right = newNode;
                 // first element of its own vector
-                branch[d].push_back(s);
+                newNode->branch.push_back(s);
+                // increment number of nodes
+                nNodes++;
             }
 
         }
 
-        // increment number of nodes
-        nNodes++;
     }
 
     // true if songs match and bands match
@@ -140,19 +150,19 @@ class tree{
     // search for the song inputted
     void search(song s)
     {
+        traversals = 0;
+
         // make a temporary song
         song tmp(s.bn,s.sn);
 
         // get the hash value for the tmp
         int d = hash_function(tmp);
+        traversals ++;
 
-        // new node things
-        node *newNode   = new node(tmp);
-        newNode->data = d;
         node *currPtr   = root;
 
         // display prompt
-        cout << "\nsearching for song " << tmp.sn << ":" << endl;
+        // cout << "\nsearching for song " << tmp.sn << " by " << tmp.bn << ":" << endl;
         
         
         while (currPtr)
@@ -162,64 +172,40 @@ class tree{
             if (d < currPtr->data)
             {
                 currPtr = currPtr->left;
+                traversals ++;
             }
             // if the tmp data is more than the current data,
             // go to current node's right child
             else if (d > currPtr->data)
             {
                 currPtr = currPtr->right;
+                traversals ++;
             }
             // if tmp data = current data, go through the vectors
             else if (d == currPtr->data)
             {
-                // TEST [success]
-                // cout << branch[d][k].sn << " is stored in branch " << d << " and element " << k << endl;
-
                 // go through the vectors until the right song + band is found
-                for(int i=0; i<branch[d].size(); i++)
+                for(int i=0; i<currPtr->branch.size(); i++)
                 {
-                    cout << branch[d][i].sn << " by " <<  branch[d][i].bn << " at element " << i << endl;
+                    // cout << currPtr->branch[i].sn << " by " <<  currPtr->branch[i].bn << " at element " << i << endl;
                     // if match, end loop
-                    if (match(branch[d][i], tmp))
+                    if (match(currPtr->branch[i], tmp))
                     {
-                        cout << "match!" << endl;
+                        // cout << "match!" << endl;
                         break;
                     }
+                    traversals ++;
                 }
                 break;
             }
+        } 
 
-        }
-
-        
+        //cout << "number of traversals: " << traversals <<  endl;
     }
 
-    void count_nodes(){
-        count_nodes(root);
+    void num_nodes()
+    {
+        cout << "\nNumber of Nodes in Tree: " << nNodes << endl;
     }
-
-    void count_nodes(node *currNode){
-        if (currNode){
-            count_nodes(currNode->left);
-            
-            cout << currNode->data << endl;
-            count_nodes(currNode->right);
-        }
-    }
-
-    void print_all(){
-        print_all(root);
-    }
-
-    void print_all(node *currNode){
-        if (currNode){
-            print_all(currNode->left);
-            cout << currNode->data << endl;
-            print_all(currNode->right);
-        }
-    }
-
-    // search function
-    // print all
 
 }; // end class tree
