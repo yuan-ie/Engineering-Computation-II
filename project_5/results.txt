@@ -1,0 +1,11 @@
+First:
+    I created a python file called classes. This file contains three classes: movies, actors, and starring_roles. The movies class will take in the movie ID number, title, and the release year. The actors class will take in the actor ID, their name, birth year, and death year if applicable. The starring_roles class will take in the IDs of the movies and actors, and probably character roles (it's included in my class but i didn't really use it).
+
+Second:
+    Then I created hash_table file. I wanted the classes and hash_tables in separate files because it's easier to visualize and implement what i have in mind: i want to store the data of the movies into one database using the hashtable class, and the data of the actors into another database using the same hashtable. However, both databases would be separate instances so the information does not collide. For this to work, the hash_table class has to use general terms and the functions and variables shouldn't be too specific so it could work whether it's the movie info i am storing/searching or the actor info.
+
+    The hash_table has an insert function, hash function, a look up function. The buffer is a list that contains 50000 empty lists, and based on the index from the hash function, the insert function will append the object to the list of the index in that buffer.
+
+Third:
+    The main function calls the user to input a number in the command line when running the main program. Inputs can only be 1, 2, or 3. 1 runs only the movies data. 2 runs the actors data. And 3 runs the movies, actors, and starring roles data.
+    Based on the file from the input, the load_function opens the file and reads every line, only extracting and inserting important infromation to the hash table. However, for the third file, it has its own function in the proj_5.py that will run the starring roles data, take the return value which is a list, and use that to call the display function of the actors_database and movies_database
